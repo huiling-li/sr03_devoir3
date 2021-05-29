@@ -75,9 +75,6 @@ if (isset($_REQUEST['action'])) {
     } else if ($_REQUEST['action'] == 'afficheclient') {
         $url_redirect = "fiche_client.php";
     }
-    else if ($_REQUEST['action'] == 'transfert_depuis_fiche_client') {
-        $url_redirect = "virement_depuis_fiche_client.php?id=".$_REQUEST["id"];
-    }
 
 
 }
