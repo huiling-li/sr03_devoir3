@@ -1,6 +1,7 @@
 <!--开头必须要写这个 不然拿不到session变量-->
 <?php
 session_start();
+
 ?>
 <!doctype html>
 <html lang="fr">
@@ -59,11 +60,11 @@ session_start();
 </article>
 
 
-<!--限制不同用户不同的链接-->
-<p><a href="vw_messagerie.php?action=msglist&userid=<?php echo $_SESSION["connected_user"]["id_user"];?>" target="_blank">Messagerie</a></p>
-<p><a href="vw_moncompte.php?action=msglist&userid=<?php echo $_SESSION["connected_user"]["id_user"];?>" target="_blank">effectuer un virement</a></p>
+<!--限制不同用户不同的链接 全部都先去controller 然后回再给你返回回来的 这样就都是没经过controller的-->
+<p><a href="myController.php?action=msglist&userid=<?php echo $_SESSION["connected_user"]["id_user"];?>" target="_blank">Messagerie</a></p>
+<p><a href="vw_moncompte.php?userid=<?php echo $_SESSION["connected_user"]["id_user"];?>" target="_blank">effectuer un virement</a></p>
 <?php if ($_SESSION["connected_user"]["profil_user"]=='EMPLOYE')
-    echo '<p><a href="fiche_client.php?action=afficheclient&userid='.$_SESSION["connected_user"]["id_user"].'" target="_blank">Fiche client</a></p>';
+    echo '<p><a href="myController.php?action=afficheclient&userid='.$_SESSION["connected_user"]["id_user"].'" target="_blank">Fiche client</a></p>';
   ?>
 
 

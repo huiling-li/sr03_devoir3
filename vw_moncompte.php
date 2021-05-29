@@ -1,5 +1,12 @@
 <?php
-  session_start();
+     session_start();
+    if(!isset($_SESSION["connected_user"]) || $_SESSION["connected_user"] == "") {
+        // utilisateur non connecté
+        header('Location: vw_login.php');
+        exit();
+    }
+$mytoken = bin2hex(random_bytes(128)); // token va servir à prévenir des attaques CSRF
+$_SESSION["mytoken"] = $mytoken;
 ?>
 
 <!doctype html>
@@ -58,23 +65,50 @@
         <article>
         <form method="POST" action="myController.php">
           <input type="hidden" name="action" value="transfert">
+            <input type="hidden" name="mytoken" value="<?php echo $mytoken; ?>">
           <div class="fieldset">
               <div class="fieldset_label">
                   <span>Transférer de l'argent</span>
               </div>
               <div class="field">
-                  <label>N° compte destinataire : </label><input type="text" size="20" name="destination">
+                  <label>N° compte destinataire : </label>
+<!--                  <input type="text" size="20" name="destination">-->
+                  <select name="destination">
+                      <!--listeUsers结构是：id_user:user(也是个array/dict所有用户键值信息)-->
+                      <?php
+                          foreach ($_SESSION['listeUsers'] as $id => $user) {
+                              if($user['numero_compte']!=$_SESSION["connected_user"]['numero_compte'])
+                                  echo '<option name="destination" value="'.$user['numero_compte'].'">'.$user['numero_compte'].'</option>';
+//                              控制了转账对象！！
+                          }
+                      ?>
+                  </select>
               </div>
               <div class="field">
                   <label>Montant à transférer : </label><input type="text" size="10" name="montant">
               </div>
               <button class="form-btn">Transférer</button>
               <?php
+              if (isset($_REQUEST["err_token"])) {
+                  echo '<p>Echec virement : le contrôle d\'intégrité a échoué.</p>';
+              }
               if (isset($_REQUEST["trf_ok"])) {
                 echo '<p>Virement effectué avec succès.</p>';
               }
+              if (isset($_REQUEST["not_enough"])) {
+                echo "<p>Votre solde n'est pas assez,veuillez saisir un montant inférieur que ".$_SESSION["connected_user"]["solde_compte"].".</p>";
+              }
+              if (isset($_REQUEST["negative"])) {
+                echo "<p>Veuillez saisir un montant positive!</p>";
+              }
+//              if (isset($_REQUEST["bad_mt"])) {
+//                echo '<p>Le montant saisi est incorrect : '.$_REQUEST["bad_mt"].'</p>';
+//              }
               if (isset($_REQUEST["bad_mt"])) {
-                echo '<p>Le montant saisi est incorrect : '.$_REQUEST["bad_mt"].'</p>';
+                  echo '<p>Le montant saisi est incorrect : '.htmlentities($_REQUEST["bad_mt"], ENT_QUOTES).' 
+                    veuillez saisir un numéro!
+                  </p>';
+//               跟直接$_REQUEST["bad_mt"]没啥区别 只不过加了个 ENT_QUOTES标志 - 可以编码双引号和单引号。
               }
               ?>
           </div>

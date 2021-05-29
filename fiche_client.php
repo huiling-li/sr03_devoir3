@@ -1,5 +1,10 @@
 <?php
 session_start();
+if(!isset($_SESSION["connected_user"]) || $_SESSION["connected_user"] == "") {
+    // utilisateur non connecté
+    header('Location: vw_login.php');
+    exit();
+}
 ?>
 <!--怎么一下插入好多个dom-->
 <!doctype html>

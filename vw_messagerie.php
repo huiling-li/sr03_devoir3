@@ -1,6 +1,11 @@
 <!--希望写动态页面 点一下这个用户就会出现他的信息：js代码-->
 <?php
-  session_start();
+     session_start();
+    if(!isset($_SESSION["connected_user"]) || $_SESSION["connected_user"] == "") {
+        // utilisateur non connecté
+        header('Location: vw_login.php');
+        exit();//要先登录！！
+}
 ?>
 
 <!doctype html>
@@ -36,12 +41,14 @@
             <table>
               <tr><th>Expéditeur</th><th>Sujet</th><th>Message</th></tr>
               <?php
+//              echo $_SESSION['messagesRecus'];
               foreach ($_SESSION['messagesRecus'] as $cle => $message) {
                 echo '<tr>';
                 echo '<td>'.$message['nom'].' '.$message['prenom'].'</td>';
-                echo '<td>'.$message['sujet_msg'].'</td>';
-                echo '<td>'.$message['corps_msg'].'</td>';
-                echo '</tr>';
+                  echo '<td>'.htmlentities($message['sujet_msg'], ENT_QUOTES).'</td>';
+//                htmlentities把php变量转换成字符实体
+                  echo '<td>'.htmlentities($message['corps_msg'], ENT_QUOTES).'</td>';
+                  echo '</tr>';
               }
                ?>
             </table>
@@ -57,13 +64,19 @@
                     </div>
                     <div class="field">
                         <label>Destinataire : </label>
-                            <select>
+                            <select name="to">
 <!--listeUsers结构是：id_user:user(也是个array/dict所有用户键值信息)-->
                             <?php
-                            foreach ($_SESSION['listeUsers'] as $id => $user) {
-                                if($user["profil_user"]=='CLIENT')
-                                echo '<option value="'.$id.'">'.$user['nom'].' '.$user['prenom'].'</option>';
-                            }
+                            if($_SESSION["connected_user"]['profil_user']='EMPLOYE')
+                                foreach ($_SESSION['listeUsers'] as $id => $user) {
+                                    if($user["profil_user"]=='CLIENT')
+                                    echo '<option value="'.$id.'">'.$user['nom'].' '.$user['prenom'].'</option>';
+                                }
+                            elseif ($_SESSION["connected_user"]['profil_user']='CLIENT')
+                                foreach ($_SESSION['listeUsers'] as $id => $user) {
+                                    if($user["profil_user"]=='EMPLOYE')
+                                        echo '<option value="'.$id.'">'.$user['nom'].' '.$user['prenom'].'</option>';
+                                }
                             ?>
                             </select>
                     </div>

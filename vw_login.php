@@ -27,7 +27,9 @@
         echo '<p class="errmsg">Merci de saisir votre login et votre mot de passe</p>';
       } else if (isset($_REQUEST["badvalue"])) {
         echo '<p class="errmsg">Votre login/mot de passe est incorrect</p>';
-      } else if (isset($_REQUEST["disconnect"])) {
+      } else if (isset($_REQUEST["ipbanned"])) {
+        echo '<p class="errmsg">Nombre de tentatives maximal atteint ! Contactez votre gestionnaire.</p>';}
+      else if (isset($_REQUEST["disconnect"])) {
         echo '<p>Vous avez bien été déconnecté.</p>';
       }
       ?>
