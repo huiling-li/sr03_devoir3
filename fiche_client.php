@@ -1,9 +1,15 @@
 <?php
 session_start();
-if(!isset($_SESSION["connected_user"]) || $_SESSION["connected_user"] == "") {
+if (!isset($_SESSION["connected_user"]) || $_SESSION["connected_user"] == "") {
     // utilisateur non connecté
     header('Location: vw_login.php');
     exit();
+}
+if (isset($_SESSION["lastConnectionTimeStamp"])) {
+    if ((strtotime("now") - $_SESSION["lastConnectionTimeStamp"]) > 300) {
+        unset($_SESSION["connected_user"]);
+        $url_redirect = 'vw_login.php';
+    }
 }
 ?>
 <!--怎么一下插入好多个dom-->
@@ -13,6 +19,15 @@ if(!isset($_SESSION["connected_user"]) || $_SESSION["connected_user"] == "") {
     <meta charset="utf-8">
     <title>Fiche_client</title>
     <link rel="stylesheet" type="text/css" media="all" href="css/mystyle.css"/>
+    <style>
+        .user .hidden {
+            display: none;
+        }
+
+        .user:hover .hidden {
+            display: block !important;
+        }
+    </style>
 </head>
 <body>
 <header>
@@ -33,35 +48,18 @@ if(!isset($_SESSION["connected_user"]) || $_SESSION["connected_user"] == "") {
 <script type="text/javascript">
     var keyword = "123";
     <?php
-    $t2="<script type='text/javascript'>document.write(t1)</script>";
-//    echo "$t2";
-    $keyword="<script>document.writeln(keyword);</script>";//php获取js的变量！！
-//    echo "$keyword";
+    $t2 = "<script type='text/javascript'>document.write(t1)</script>";
+    //    echo "$t2";
+    $keyword = "<script>document.writeln(keyword);</script>";//php获取js的变量！！
+    //    echo "$keyword";
     ?>
-
-    function affiche_client(id) {
-        var div = document.getElementById("affiche");
-        var p = document.createElement("p");
-        var id1=id;
-        <?php $id1= "\"+id+\"";
-//                echo $id1;
-        ?>
-        var t2 = Number("<?php echo $_SESSION["connected_user"]["id_user"];?>");
-        var data= "<?php echo $_SESSION["listeUsers"]['1']['prenom'];?>";
-
-        console.log(data,t2,typeof t2,typeof data);
-
-        var txt = document.createTextNode(
-           " id_user:<?php echo $_SESSION["connected_user"]["id_user"];?>
-        //login:<?php //echo $_SESSION["listeUsers"][$id]["login"];?>
-        //login:<?php //echo $t2;?>
-            nom:<?php echo $_SESSION["connected_user"]["nom"];?>
-                prenom:<?php echo $_SESSION["connected_user"]["prenom"];?>
-                    profil_user:<?php echo $_SESSION["connected_user"]["profil_user"];?>
-                        numero_compte:<?php echo $_SESSION["connected_user"]["numero_compte"];?>");
-                            //好像不加""就直接找不到函数了？
-        p.appendChild(txt);
-        div.appendChild(p);
+    function toggle(id) {
+        const infos = document.getElementById('user-' + id);
+        console.log([...infos.classList]);
+        if (infos.classList.contains('hidden'))
+            infos.classList.remove('hidden');
+        else
+            infos.classList.add('hidden');
     }
 </script>
 
@@ -73,12 +71,23 @@ if(!isset($_SESSION["connected_user"]) || $_SESSION["connected_user"] == "") {
             <!--foreach (iterable_expression as $key => $value) 所以id是键 user是值-->
             <!--或者只有值：foreach (iterable_expression as $value)-->
             <!--需要在php的循环/判断里的html就必须用echo拼了:字符串用''包裹 php变量用..包裹即可:其实就要插的地方'.xxx.'即可-->
-            <?php
-            foreach ($_SESSION['listeUsers'] as $id => $user) {
-                echo '<button  onclick="affiche_client('.$id.')" value="' . $id . '">' . $user['nom'] . ' ' . $user['prenom'] . '</button>';
-            }
+            <?php //                echo '<button  onclick="affiche_client('.$id.')" value="' . $id . '">' . $user['nom'] . ' ' . $user['prenom'] . '</button>';
             ?>
+            <?php foreach ($_SESSION['listeUsers'] as $id => $user) { ?>
+                <div class="user">
+                    <button onclick="toggle.bind(null, '<?= $id ?>')"
+                            value="<?= $id ?>"><?= $user['nom'] ?> <?= $user['prenom'] ?></button>
+                    <table id="user-<?= $id ?>" class="hidden">
+                        <tr><td>id_user:<?= $user["id_user"]; ?></td></tr>
+                        <tr><td>nom:<?= $user["nom"]; ?></td></tr>
+                        <tr><td>prenom:<?= $user["prenom"]; ?></td></tr>
+                        <tr><td>profil_user:<?= $user["profil_user"]; ?></td></tr>
+                        <tr><td>numero_compte:<?= $user["numero_compte"]; ?></td></tr>
+                        <tr><td><a href="virement_depuis_fiche_client.php?id=<?=$id?>">effectuer un virement du compte de <?= $user['nom'] ?> <?= $user['prenom'] ?></a></td></tr><!--ajouté-->
 
+                    </table>
+                </div>
+            <?php } ?>
         </div>
     </div>
 

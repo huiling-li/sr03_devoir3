@@ -5,6 +5,7 @@
         header('Location: vw_login.php');
         exit();
     }
+
 $mytoken = bin2hex(random_bytes(128)); // token va servir à prévenir des attaques CSRF
 $_SESSION["mytoken"] = $mytoken;
 ?>

@@ -1,7 +1,17 @@
 <!--开头必须要写这个 不然拿不到session变量-->
 <?php
-session_start();
-
+    session_start();
+    if(!isset($_SESSION["connected_user"]) || $_SESSION["connected_user"] == "") {
+        // utilisateur non connecté
+        header('Location: vw_login.php');
+        exit();
+    }
+    if(isset($_SESSION["lastConnectionTimeStamp"])) {
+        if (strtotime("now") - $_SESSION["lastConnectionTimeStamp"] > 300) {
+            unset($_SESSION["connected_user"]);
+            $url_redirect = 'vw_login.php';
+        }
+    }
 ?>
 <!doctype html>
 <html lang="fr">
