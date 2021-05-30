@@ -18,6 +18,7 @@ if (isset($_SESSION["lastConnectionTimeStamp"])) {
 <head>
     <meta charset="utf-8">
     <title>Fiche_client</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self';">
     <link rel="stylesheet" type="text/css" media="all" href="css/mystyle.css"/>
     <style>
         .user .hidden {
@@ -78,13 +79,26 @@ if (isset($_SESSION["lastConnectionTimeStamp"])) {
                     <button onclick="toggle.bind(null, '<?= $id ?>')"
                             value="<?= $id ?>"><?= $user['nom'] ?> <?= $user['prenom'] ?></button>
                     <table id="user-<?= $id ?>" class="hidden">
-                        <tr><td>id_user:<?= $user["id_user"]; ?></td></tr>
-                        <tr><td>nom:<?= $user["nom"]; ?></td></tr>
-                        <tr><td>prenom:<?= $user["prenom"]; ?></td></tr>
-                        <tr><td>profil_user:<?= $user["profil_user"]; ?></td></tr>
-                        <tr><td>numero_compte:<?= $user["numero_compte"]; ?></td></tr>
-                        <tr><td><a href="virement_depuis_fiche_client.php?id=<?=$id?>">effectuer un virement du compte de <?= $user['nom'] ?> <?= $user['prenom'] ?></a></td></tr><!--ajouté-->
-
+                        <tr>
+                            <td>id_user:<?= $user["id_user"]; ?></td>
+                        </tr>
+                        <tr>
+                            <td>nom:<?= $user["nom"]; ?></td>
+                        </tr>
+                        <tr>
+                            <td>prenom:<?= $user["prenom"]; ?></td>
+                        </tr>
+                        <tr>
+                            <td>profil_user:<?= $user["profil_user"]; ?></td>
+                        </tr>
+                        <tr>
+                            <td>numero_compte:<?= $user["numero_compte"]; ?></td>
+                        </tr>
+                        <tr>
+                            <td><a href="vw_moncompte.php?id=<?= $id ?>">effectuer un virement du compte
+                                    de <?= $user['nom'] ?> <?= $user['prenom'] ?></a></td>
+                        </tr><!--ajouté-->
+                        <!--如果没有传id过来 在mon compte里基于id的操作就忽略？-->
                     </table>
                 </div>
             <?php } ?>

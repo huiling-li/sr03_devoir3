@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>Connexion</title>
-    <link rel="stylesheet" type="text/css" media="all"  href="css/mystyle.css" />
+    <link rel="stylesheet" type="text/css" media="all" href="css/mystyle.css"/>
 </head>
 <body>
 <header>
@@ -33,7 +33,7 @@
     ?>
 </section>
 <style type="text/css">
-    body{
+    body {
 
     }
 </style>
@@ -41,17 +41,16 @@
 <!--js调用php-->
 
 
-
 <script>
-    var user=100;
-    userId=document.getElementByIdx_x("userId").value;
-    alert (userId);
+    var user = 100;
+    userId = document.getElementByIdx_x("userId").value;
+    alert(userId);
 </script>
 
 <script type="text/javascript">
     var t1 = 123;
     <?php
-    $t2="<script type='text/javascript'>document.write(t1)</script>";
+    $t2 = "<script type='text/javascript'>document.write(t1)</script>";
     ?>
 
 </script>

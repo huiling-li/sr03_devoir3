@@ -19,6 +19,7 @@ if (isset($_SESSION["lastConnectionTimeStamp"])) {
 <head>
     <meta charset="utf-8">
     <title>Messages</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self';">
     <link rel="stylesheet" type="text/css" media="all" href="css/mystyle.css"/>
 </head>
 <body>
